@@ -4,7 +4,7 @@ local configurations = {}
 configurations["ShowConfig"] = true
 configurations["ShowBuild"] = true
 configurations["ShowRun"] = true
-configurations["UseTabs"] = true
+configurations["UseTabs"] = false
 
 local buffers = {}
 buffers["Config"] = nil
@@ -197,7 +197,7 @@ function M.cmake_config(on_exit_function)
 end
 
 function M.cmake_run()
-	if buffers["Run"] then
+	if buffers["Run"] and vim.api.nvim_buf_is_valid(buffers["Run"]) then
 		vim.cmd(":bw! " .. buffers["Run"])
 	end
 	local buf = vim.api.nvim_create_buf(true, false)
