@@ -85,6 +85,11 @@ configurations["ShowRun"] = true
 ```
 By changing the values of those keys, you can set whether they should split window when they exit.
 
+```lua
+configurations["UseTabs"] = true
+```
+By changing it to false, you can have the buffer splitted. 
+
 # Quitting
 My suggestion would be to quit using ```<leader>q``` which is mapped, because it deletes the buffer. If you don't delete the buffer, it will continue to use the same buffer. If you don't like it to happen, you can create an issue. I can add a configuration for it. 
 
