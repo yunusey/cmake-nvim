@@ -4,6 +4,7 @@ local configurations = {}
 configurations["ShowConfig"] = true
 configurations["ShowBuild"] = true
 configurations["ShowRun"] = true
+configurations["UseTabs"] = true
 
 local buffers = {}
 buffers["Config"] = nil
@@ -158,7 +159,12 @@ function M.cmake_build(on_exit_function)
 	local command = {"cmake", "--build", build_dir}
 	cmake_command(buf, command, false, "Build", on_exit_function)
 	if split and configurations["ShowBuild"] then
-		vim.cmd(":vert belowright sb " .. tostring(buf))
+		if not configurations["UseTabs"] then
+			vim.cmd(":vert belowright sb " .. tostring(buf))
+		else
+			vim.cmd(":tabnew")
+			vim.api.nvim_set_current_buf(buf)
+		end
 	end
 end
 
@@ -181,7 +187,12 @@ function M.cmake_config(on_exit_function)
 	local command = {"cmake", "-B", build_dir, "-S", source_dir}
 	cmake_command(buf, command, true, "Configuration", on_exit_function)
 	if split and configurations["ShowConfig"] then
-		vim.cmd(":vert belowright sb " .. tostring(buf))
+		if not configurations["UseTabs"] then
+			vim.cmd(":vert belowright sb " .. tostring(buf))
+		else
+			vim.cmd(":tabnew")
+			vim.api.nvim_set_current_buf(buf)
+		end
 	end
 end
 
@@ -192,7 +203,12 @@ function M.cmake_run()
 	local buf = vim.api.nvim_create_buf(true, false)
 	buffers["Run"] = buf
 	config_settings(buf)
-	vim.cmd(":vert belowright sb " .. tostring(buf))
+	if not configurations["UseTabs"] then
+		vim.cmd(":vert belowright sb " .. tostring(buf))
+	else
+		vim.cmd(":tabnew")
+		vim.api.nvim_set_current_buf(buf)
+	end
 	vim.cmd(":terminal ")
 	vim.api.nvim_paste(project .. '\n', true, 3)
 	vim.api.nvim_buf_add_highlight(buf, -1, "ErrorMsg", 0, 0, -1)
