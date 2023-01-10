@@ -5,6 +5,7 @@ configurations["ShowConfig"] = true
 configurations["ShowBuild"] = true
 configurations["ShowRun"] = true
 configurations["UseTabs"] = false
+configurations["UseTogTerm"] = true
 
 local buffers = {}
 buffers["Config"] = nil
@@ -203,15 +204,22 @@ function M.cmake_run()
 	local buf = vim.api.nvim_create_buf(true, false)
 	buffers["Run"] = buf
 	config_settings(buf)
-	if not configurations["UseTabs"] then
+	if not configurations["UseTabs"] and not configurations["UseTogTerm"] then
 		vim.cmd(":vert belowright sb " .. tostring(buf))
 	else
-		vim.cmd(":tabnew")
-		vim.api.nvim_set_current_buf(buf)
+		if not configurations["UseTogTerm"] then
+			vim.cmd(":tabnew")
+			vim.api.nvim_set_current_buf(buf)
+		end
 	end
-	vim.cmd(":terminal ")
-	vim.api.nvim_paste(project .. '\n', true, 3)
-	vim.api.nvim_buf_add_highlight(buf, -1, "ErrorMsg", 0, 0, -1)
+	if not configurations["UseTogTerm"] then
+		vim.cmd(":terminal ")
+		vim.cmd(":set number!")
+		vim.cmd(":set relativenumber!")
+		vim.api.nvim_paste(project .. '\n', true, 3)
+	else
+		vim.cmd(":TermExec cmd=" .. project)
+	end
 end
 
 function M.user_commands()
